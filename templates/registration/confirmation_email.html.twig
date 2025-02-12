@@ -1,0 +1,7 @@
+<p>Bonjour {{ user.email }},</p>
+
+<p>Veuillez cliquer sur le lien ci-dessous pour confirmer votre adresse email :</p>
+
+<p><a href="{{ signedUrl }}">Confirmer mon email</a></p>
+
+<p>{{ expiresAtMessageKey|trans({}, 'validators') }} : {{ expiresAtMessageData.expiresAt|date('d/m/Y H:i') }}</p>

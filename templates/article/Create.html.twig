@@ -1,0 +1,19 @@
+{% block title %}Créer une publication{% endblock %}
+
+{% block body %}
+    <div>
+        <h1>Créer une publication</h1>
+
+        {{ form_start(form) }}
+        <div>
+            {{ form_widget(form.content, {'attr': {'placeholder': 'Écrivez votre contenu ici...'}}) }}
+        </div>
+        <div>
+            {{ form_row(form.image) }}
+        </div>
+        <div>
+            {{ form_row(form.submit) }}
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

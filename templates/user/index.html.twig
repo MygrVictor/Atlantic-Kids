@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de {{ app.user.username }}{% endblock %}
+
+{% block body %}
+<style>
+    .profile-wrapper {
+        margin: 2em auto;
+        max-width: 800px;
+        width: 95%;
+        font: 18px/1.5 sans-serif;
+    }
+    .profile-wrapper h2 {
+        text-align: center;
+        margin-bottom: 1em;
+    }
+    .profile-wrapper ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    .profile-wrapper li {
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+    .profile-wrapper .info-label {
+        font-weight: bold;
+    }
+</style>
+
+<div class="profile-wrapper">
+    <h2>Bienvenue sur votre profil, {{ app.user.username }}!</h2>
+    <p>Voici vos informations personnelles :</p>
+    
+    <ul>
+        <li><span class="info-label">Nom :</span> {{ app.user.name }}</li>
+        <li><span class="info-label">Nom :</span> {{ app.user.firstname }}</li>
+        <li><span class="info-label">Nom :</span> {{ app.user.username }}</li>
+        <li><span class="info-label">Email :</span> {{ app.user.email }}</li>
+        
+    </ul>
+    
+   
+</div>
+{% endblock %}

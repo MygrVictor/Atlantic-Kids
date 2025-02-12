@@ -15,6 +15,10 @@ class ArticleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Article::class);
     }
+    public function findAllArticles()
+    {
+        return $this->findBy([], ['createdAt' => 'DESC']); // Trier les articles par date
+    }
 
     //    /**
     //     * @return Article[] Returns an array of Article objects
