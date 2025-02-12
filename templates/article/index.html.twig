@@ -1,3 +1,4 @@
+{% extends 'base.html.twig' %}
 {% block title %}Liste des articles{% endblock %}
 
 {% block body %}
@@ -7,7 +8,7 @@
         {% for article in articles %}
             <div>
                 <h2>{{ article.title }}</h2>
-                <p><strong>Auteur : </strong>{{ article.author.username }}</p>
+                <p><strong>Auteur : </strong>{{ article.user.username }}</p>
                 <p><strong>Date de publication : </strong>{{ article.createdAt|date('d/m/Y') }}</p>
                 
                 <p>{{ article.content|slice(0, 150) }}... <a href="{{ path('article_show', {id: article.id}) }}">Lire la suite</a></p>
@@ -17,10 +18,72 @@
                 {% endif %}
                 
                 <hr>
+                
+                {% if app.user and app.user.id == article.user.id %}
+                    <div class="flex justify-end">
+                        <form action="{{ path('article_delete', { id: article.id }) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette publication ?')">
+                            <button type="submit" class="btn btn-danger">
+                                Supprimer
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
             </div>
         {% else %}
             <p>Aucun article trouvé.</p>
         {% endfor %}
     </div>
+    <script>document.addEventListener("DOMContentLoaded", function () {
+document.querySelectorAll('.like-button').forEach(button => {
+button.addEventListener('click', async function (event) {
+event.preventDefault();
 
+const postId = button.getAttribute('data-post-id');
+const url = `/posts/${postId}/like`;
+
+try {
+const response = await fetch(url, {
+method: 'POST',
+headers: {
+'X-Requested-With': 'XMLHttpRequest',
+'Content-Type': 'application/json',
+'Accept': 'application/json'
+}
+});
+
+if (! response.ok) 
+throw new Error (`HTTP error! status: ${
+response.status
+}`);
+
+
+
+const data = await response.json();
+
+if (data.likesCount !== undefined && data.liked !== undefined) {
+const likesCounter = document.getElementById (`likes-count-${postId}`);
+if (likesCounter) 
+likesCounter.textContent = data.likesCount;
+
+
+
+button.setAttribute('data-liked', data.liked.toString());
+
+button.innerHTML = `
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 ${
+data.liked ? 'text-red-500' : ''
+}" fill="currentColor" viewbox="0 0 24 24">
+									<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+								</svg>
+								${
+data.likesCount
+}
+							`;
+}
+} catch (error) {
+console.error('Error:', error);
+}
+});
+});
+});</script>
 {% endblock %}

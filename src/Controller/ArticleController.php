@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 final class ArticleController extends AbstractController
 {
@@ -38,7 +39,7 @@ final class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $article->setCreatedAt(new \DateTimeImmutable());
+            dump('Formulaire soumis et valide');
 
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
@@ -65,4 +66,47 @@ final class ArticleController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/article/{id}', name: 'article_show')]
+    public function show($id, ArticleRepository $articleRepository): Response
+    {
+        // Récupérer l'article par son ID via le repository
+        $article = $articleRepository->find($id);
+
+        // Si l'article n'existe pas, on renvoie une erreur 404
+        if (!$article) {
+            throw $this->createNotFoundException('Article non trouvé');
+        }
+
+        // Passer l'article au template
+        return $this->render('article/show.html.twig', [
+            'article' => $article,
+        ]);
+    }
+    #[Route('/article/{id}/delete', name: 'article_delete', methods: ['POST'])]
+public function delete($id, ArticleRepository $articleRepository, EntityManagerInterface $entityManager): Response
+{
+    // Récupérer l'article par son ID
+    $article = $articleRepository->find($id);
+
+    // Vérifier si l'article existe
+    if (!$article) {
+        throw $this->createNotFoundException('Article non trouvé');
+    }
+
+    // Vérifier si l'utilisateur est l'auteur de l'article
+    if ($article->getUser() !== $this->getUser()) {
+        $this->addFlash('error', 'Vous n\'êtes pas autorisé à supprimer cet article.');
+        return $this->redirectToRoute('app_article');
+    }
+
+    // Supprimer l'article
+    $entityManager->remove($article);
+    $entityManager->flush();
+
+    // Rediriger vers la liste des articles après la suppression
+    $this->addFlash('success', 'Article supprimé avec succès.');
+    return $this->redirectToRoute('app_article');
+}
+
 }

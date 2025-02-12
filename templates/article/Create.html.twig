@@ -1,4 +1,4 @@
-{% block title %}Créer une publication{% endblock %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
     <div>
@@ -6,14 +6,18 @@
 
         {{ form_start(form) }}
         <div>
+            {{ form_row(form.title) }}
+        <div>
             {{ form_widget(form.content, {'attr': {'placeholder': 'Écrivez votre contenu ici...'}}) }}
         </div>
         <div>
             {{ form_row(form.image) }}
+            
         </div>
         <div>
             {{ form_row(form.submit) }}
         </div>
         {{ form_end(form) }}
+
     </div>
 {% endblock %}

@@ -21,7 +21,6 @@ class Article
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
     private ?string $title = null;
 
     #[ORM\Column(type: "text")]
