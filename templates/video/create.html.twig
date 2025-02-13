@@ -1,0 +1,16 @@
+{# templates/video/create.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une vidéo{% endblock %}
+
+{% block body %}
+    <h1>Ajouter une nouvelle vidéo</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.url) }}
+        {{ form_row(form.description) }}
+        <button class="btn btn-primary">Envoyer</button>
+    {{ form_end(form) }}
+{% endblock %}

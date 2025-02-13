@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Entity;
-
+use App\Entity\Like;
+use App\Entity\User;
 use App\Repository\VideoRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: VideoRepository::class)]
 #[Broadcast]
 #[ORM\HasLifecycleCallbacks] // Ajout de cette annotation pour activer les callbacks lifecycle
@@ -32,6 +33,11 @@ class Video
 
     #[ORM\OneToMany(mappedBy: 'likeable', targetEntity: Like::class)]
     private Collection $likes;
+
+    #[ORM\ManyToOne(targetEntity: "App\Entity\User", inversedBy: "video")]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "L'utilisateur associé à la publication ne peut pas être nul.")]
+    private ?User $user = null;
 
     public function __construct()
     {
@@ -110,4 +116,29 @@ class Video
     {
         return $this->likes;
     }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+ public function getIframeUrl(): ?string
+{
+    
+    if (preg_match('#(https?://)?(www\.)?(youtube|youtu|youtube-nocookie)\.(com|be)/.*(?:v=|\/)([a-zA-Z0-9_-]+)#', $this->url, $matches)) {
+        $videoId = $matches[4]; // ID de la vidéo
+        return 'https://www.youtube.com/embed/' . $videoId;
+    }
+    
+    return null;
+}
+
+
 }

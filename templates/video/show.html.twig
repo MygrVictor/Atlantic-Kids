@@ -1,0 +1,17 @@
+{# templates/video/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la vidéo{% endblock %}
+
+{% block body %}
+    <h1>{{ video.title }}</h1>
+
+    {% if video.getIframeUrl() %}
+        <iframe width="560" height="315" src="{{ video.getIframeUrl() }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    {% else %}
+        <p>Cette vidéo n'est pas une vidéo YouTube ou l'URL est invalide.</p>
+    {% endif %}
+
+    <p>{{ video.description }}</p>
+{% endblock %}
